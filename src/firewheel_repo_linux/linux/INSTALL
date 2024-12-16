@@ -1,0 +1,109 @@
+#!/bin/bash
+
+# Create a flag for verifying installation
+SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+INSTALL_FLAG=$SCRIPT_DIR/.linux.base_objects.installed
+
+
+#######################################################
+# Checking if there this script has already been complete.
+#######################################################
+function check_flag() {
+    if [[ -f "$INSTALL_FLAG" ]]; then
+        echo >&2 "linux.base_objects is already installed!"
+        exit 117;  # Structure needs cleaning
+    fi
+}
+
+
+#######################################################
+# Download using wget and then checksum the downloaded files.
+#
+# It is important to verify that the downloaded files
+# are the files are the same ones as expected.
+# This function provides an outline of how to checksum files,
+# but will need to be updated with the specific hashes/file names
+# that have been downloaded.
+#
+# This function assumes that the passed in hashes are SHA-256
+#######################################################
+function wget_and_checksum() {
+    downloads=("$@")
+    # Uses 2D arrays in bash: https://stackoverflow.com/a/44831174
+    declare -n d
+    for d in "${downloads[@]}";
+    do
+        wget "${d[0]}"
+        echo "${d[1]}  ${d[2]}" | shasum -a 256 --check
+    done
+}
+
+#######################################################
+# A function to help users clean up a partial installation
+# in the event of an error.
+#######################################################
+function cleanup() {
+    echo "Cleaning up linux.base_objects install"
+    rm -rf "vm_resources/*.tgz"
+    rm -rf $INSTALL_FLAG
+    exit 1
+}
+trap cleanup ERR
+
+# Ensure we only complete the script once
+check_flag
+
+
+#######################################################
+# Uncomment if there is data/VM resources/images to download.
+# `file1`, `file2`, etc. should be space separated strings of
+# (URL SHASUM-256 FILENAME).
+#
+# We recommend that explicit versions are used for all Images/VMRs to prevent
+# possible differences between instances of a given Model Component.
+# Please be mindful of the software versions as it can have unintended
+# consequences on your Emulytics experiment.
+#
+# We require checksums of the files to assist users in verifying
+# that they have downloaded the same version.
+#######################################################
+# Be sure to use SHA-256 hashes for the checksums (e.g. shasum -a 256 <file>)
+
+
+# Create some nice defaults for users
+# this includes a bashrc, vimrc, and SSH keys
+vimrc_fn=".vimrc"
+vimrc=("https://github.com/amix/vimrc/raw/3c26776552ecb436bd8090c973435a68dbe8cb62/vimrcs/basic.vim" "bde3c8e77682d22bde680919d3416524fbc4e13d8aaf2ed25bcd3bdc3b6875b1" "basic.vim")
+bashrc_fn=".bashrc"
+bashrc=("https://github.com/sudonitesh/beautiful-bash/raw/4ad53ee9d1b0e2104e9dd77ae4f74e71262395d5/.bashrc" "19fca5072753f1bf8da1d4770d7dfe409c84e29ad21bbe92abbe37b7232df249" "$bashrc_fn")
+
+tmux_cssh=("https://gitlab.com/peikk0/tmux-cssh/-/raw/a35957f7d9a0dbfd296b73dbb6f56ee4c193dc56/tmux-cssh" "cd44ed3321abc190a0a128b944b004857770e8ea18c03952e63a234cb3056098" "tmux-cssh")
+files=(vimrc bashrc tmux_cssh)
+wget_and_checksum "${files[@]}"
+
+mv "basic.vim" "$vimrc_fn"
+
+
+# Create default set of SSH keys for the experiments
+mkdir ".ssh"
+ssh-keygen -f .ssh/id_rsa -N ""
+echo -e "Host *\n\tStrictHostKeyChecking=no\n\tUserKnownHostsFile=/dev/null\n\tForwardX11Trusted yes\n" >> .ssh/config
+pushd .ssh
+cat id_rsa.pub >> authorized_keys
+
+# Fix permissions
+chmod 600 authorized_keys
+chmod 600 config
+popd
+
+# Combine all the useful files
+tar -czf "combined_profiles.tgz" ".ssh" "$bashrc_fn" "$vimrc_fn"
+
+mv "combined_profiles.tgz" "vm_resources/"
+mv "tmux-cssh" "vm_resources/"
+
+# Clean up
+rm -rf ".ssh" "$bashrc_fn" "$vimrc_fn"
+
+# Set the flag to notify of successful completion
+touch $INSTALL_FLAG

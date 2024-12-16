@@ -1,0 +1,12 @@
+name: linux.ubuntu
+attributes:
+    depends: []
+    provides: []
+model_components:
+    depends:
+        - linux.base_objects
+model_component_objects: model_component_objects.py
+vm_resources:
+    - vm_resources/*.py
+    - vm_resources/*.sh
+    - vm_resources/debs/*.tgz

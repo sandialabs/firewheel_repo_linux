@@ -1,0 +1,87 @@
+#!/bin/bash
+
+# Create a flag for verifying installation
+SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+INSTALL_FLAG=$SCRIPT_DIR/.linux.ubuntu2204.installed
+
+tarname="pssh_2.3.4-2_all_debs.tgz"
+
+#######################################################
+# Checking if there this script has already been complete.
+#######################################################
+function check_flag() {
+    if [[ -f "$INSTALL_FLAG" ]]; then
+        echo >&2 "linux.ubuntu2204 is already installed!"
+        exit 117;  # Structure needs cleaning
+    fi
+}
+
+
+#######################################################
+# Download using wget and then checksum the downloaded files.
+#
+# It is important to verify that the downloaded files
+# are the files are the same ones as expected.
+# This function provides an outline of how to checksum files,
+# but will need to be updated with the specific hashes/file names
+# that have been downloaded.
+#
+# This function assumes that the passed in hashes are SHA-256
+#######################################################
+function wget_and_checksum() {
+    downloads=("$@")
+    # Uses 2D arrays in bash: https://stackoverflow.com/a/44831174
+    declare -n d
+    for d in "${downloads[@]}";
+    do
+        wget "${d[0]}"
+        echo "${d[1]}  ${d[2]}" | shasum -a 256 --check
+    done
+}
+
+#######################################################
+# A function to help users clean up a partial installation
+# in the event of an error.
+#######################################################
+function cleanup() {
+    echo "Cleaning up linux.ubuntu2204 install"
+    rm -rf "vm_resources/debs/$tarname"
+    rm -rf $INSTALL_FLAG
+    exit 1
+}
+trap cleanup ERR
+
+# Ensure we only complete the script once
+check_flag
+
+
+#######################################################
+# Uncomment if there is data/VM resources/images to download.
+# `file1`, `file2`, etc. should be space separated strings of
+# (URL SHASUM-256 FILENAME).
+#
+# We recommend that explicit versions are used for all Images/VMRs to prevent
+# possible differences between instances of a given Model Component.
+# Please be mindful of the software versions as it can have unintended
+# consequences on your Emulytics experiment.
+#
+# We require checksums of the files to assist users in verifying
+# that they have downloaded the same version.
+#######################################################
+# Be sure to use SHA-256 hashes for the checksums (e.g. shasum -a 256 <file>)
+pssh=("http://archive.ubuntu.com/ubuntu/pool/universe/p/pssh/pssh_2.3.4-2_all.deb" "08689810f7f7f87934de47b59c2c9791eeef61059cd45a9388a53035e56d941d" "pssh_2.3.4-2_all.deb")
+python_pssh_libs=("http://archive.ubuntu.com/ubuntu/pool/universe/p/pssh/python3-psshlib_2.3.4-2_all.deb" "8e794c0ae1fa311f4f461ae42fe6d84b5dc8e0e425ce9fa37b2c1345fbc39e7b" "python3-psshlib_2.3.4-2_all.deb")
+files=(pssh python_pssh_libs)
+wget_and_checksum "${files[@]}"
+echo "Downloaded and checksummed all files!"
+
+dirname="pssh_debs"
+mkdir "$dirname"
+mv "${pssh[2]}" "$dirname"
+mv "${python_pssh_libs[2]}" "$dirname"
+tar -czf "$tarname" "$dirname"
+rm -rf "$dirname"
+mv "$tarname" ./vm_resources/debs/
+
+# Set the flag to notify of successful completion
+touch $INSTALL_FLAG

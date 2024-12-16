@@ -1,0 +1,18 @@
+attributes:
+  depends: []
+  precedes: []
+  provides: []
+images:
+    - paths:
+        - images/ubuntu-18.04.5-server-amd64.qcow2.xz
+      architecture: x86_64
+    - paths:
+        - images/ubuntu-18.04.5-desktop-amd64.qcow2.xz
+      architecture: x86_64
+model_component_objects: model_component_objects.py
+model_components:
+  depends:
+  - linux.ubuntu
+  - linux.base_objects
+  precedes: []
+name: linux.ubuntu1804

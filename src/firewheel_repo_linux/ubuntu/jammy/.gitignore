@@ -1,0 +1,4 @@
+.linux.ubuntu2204.installed
+images/*.tgz
+images/*.xz
+vm_resources/debs/*.tgz

@@ -1,0 +1,156 @@
+#!/bin/bash
+
+# Create a flag for verifying installation
+SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+INSTALL_FLAG=$SCRIPT_DIR/.linux.ubuntu.installed
+
+tarname="*.tgz"
+
+#######################################################
+# Checking if there this script has already been complete.
+#######################################################
+function check_flag() {
+    if [[ -f "$INSTALL_FLAG" ]]; then
+        echo >&2 "linux.ubuntu is already installed!"
+        exit 117;  # Structure needs cleaning
+    fi
+}
+
+
+#######################################################
+# Download using wget and then checksum the downloaded files.
+#
+# It is important to verify that the downloaded files
+# are the files are the same ones as expected.
+# This function provides an outline of how to checksum files,
+# but will need to be updated with the specific hashes/file names
+# that have been downloaded.
+#
+# This function assumes that the passed in hashes are SHA-256
+#######################################################
+function wget_and_checksum() {
+    downloads=("$@")
+    # Uses 2D arrays in bash: https://stackoverflow.com/a/44831174
+    declare -n d
+    for d in "${downloads[@]}";
+    do
+        wget "${d[0]}"
+        echo "${d[1]}  ${d[2]}" | shasum -a 256 --check
+    done
+}
+
+#######################################################
+# A function to help users clean up a partial installation
+# in the event of an error.
+#######################################################
+function cleanup() {
+    echo "Cleaning up linux.ubuntu install"
+    rm -rf "vm_resources/debs/$tarname"
+    rm -rf $INSTALL_FLAG
+    exit 1
+}
+trap cleanup ERR
+
+# Ensure we only complete the script once
+check_flag
+
+
+#######################################################
+# Uncomment if there is data/VM resources/images to download.
+# `file1`, `file2`, etc. should be space separated strings of
+# (URL SHASUM-256 FILENAME).
+#
+# We recommend that explicit versions are used for all Images/VMRs to prevent
+# possible differences between instances of a given Model Component.
+# Please be mindful of the software versions as it can have unintended
+# consequences on your Emulytics experiment.
+#
+# We require checksums of the files to assist users in verifying
+# that they have downloaded the same version.
+#######################################################
+# Be sure to use SHA-256 hashes for the checksums (e.g. shasum -a 256 <file>)
+
+# htop
+htop_fn="htop_1.0.2-3_amd64.deb"
+htop_dir="htop-1_0_2_debs"
+htop=("http://archive.ubuntu.com/ubuntu/pool/universe/h/htop/htop_1.0.2-3_amd64.deb" "0311d8a26689935ca53e8e9252cb2d95a1fdc2f8278f4edb5733f555dad984a9" "$htop_fn")
+htop_tar="htop-1_0_2_debs.tgz"
+files=(htop)
+wget_and_checksum "${files[@]}"
+mkdir "$htop_dir"
+mv "$htop_fn" "$htop_dir"
+tar -czf "$htop_tar" "$htop_dir"
+mv "$htop_tar" vm_resources/debs/
+rm -rf "$htop_dir"
+
+# expect
+expect_fn="expect_5.45-7_amd64.deb"
+libtcl_fn="libtcl8.6_8.6.5+dfsg-2_amd64.deb"
+tcpexpect_fn="tcl-expect_5.45-7_amd64.deb"
+expect_dir="expect_debs"
+expect_tar="expect_5.45-7_amd64_debs.tgz"
+expect=("http://archive.ubuntu.com/ubuntu/pool/universe/e/expect/expect_5.45-7_amd64.deb" "abad38a5b63d9f2e77da359d27a514e552cae280a90df21332d91ee6cf8dfe9c" "$expect_fn")
+libtcl=("http://archive.ubuntu.com/ubuntu/pool/main/t/tcl8.6/libtcl8.6_8.6.5+dfsg-2_amd64.deb" "a061cf3a366b9d49b71a83441dc737cc2d0f2d8019543944f20a4d1d2622cdc7" "$libtcl_fn")
+tclexpect=("http://archive.ubuntu.com/ubuntu/pool/universe/e/expect/tcl-expect_5.45-7_amd64.deb" "31076fdac0515f4b9c719af712a452e4797a232eb0d9970221ed0b0149fed43f" "$tcpexpect_fn")
+files=(expect libtcl tclexpect)
+wget_and_checksum "${files[@]}"
+mkdir "$expect_dir"
+mv "$expect_fn" "$expect_dir"
+mv "$libtcl_fn" "$expect_dir"
+mv "$tcpexpect_fn" "$expect_dir"
+tar -czf "$expect_tar" "$expect_dir"
+mv "$expect_tar" vm_resources/debs/
+rm -rf "$expect_dir"
+
+# openssh
+ncurses_fn="ncurses-term_6.0+20160213-1ubuntu1_all.deb"
+opensshclient_fn="openssh-client_7.2p2-4ubuntu2.10_amd64.deb"
+opensshserver_fn="openssh-server_7.2p2-4ubuntu2.10_amd64.deb"
+opensshsftpserver_fn="openssh-sftp-server_7.2p2-4ubuntu2.10_amd64.deb"
+sshimportid_fn="ssh-import-id_5.5-0ubuntu1_all.deb"
+ncurses=("http://archive.ubuntu.com/ubuntu/pool/main/n/ncurses/ncurses-term_6.0+20160213-1ubuntu1_all.deb" "2efb680d98af002b11948a4215c50259a799260c7fbb8b9f06e2d2f3736ab717" "$ncurses_fn")
+opensshclient=("http://archive.ubuntu.com/ubuntu/pool/main/o/openssh/openssh-client_7.2p2-4ubuntu2.10_amd64.deb" "2e9a24614869da9ab5bffead28507c0781f748c818e048d2315eea172af36877" "$opensshclient_fn")
+opensshserver=("http://archive.ubuntu.com/ubuntu/pool/main/o/openssh/openssh-server_7.2p2-4ubuntu2.10_amd64.deb" "9dd06c7275ca1d047a450b53a0d03c0f7c3d8df5d35988ee146280a900fefca4" "$opensshserver_fn")
+opensshsftpserver=("http://archive.ubuntu.com/ubuntu/pool/main/o/openssh/openssh-sftp-server_7.2p2-4ubuntu2.10_amd64.deb" "fe0622c278799e4e6304d83bcb0f832888fb2082dbe4652c603a18e007c37a4b" "$opensshsftpserver_fn")
+sshimportid=("http://archive.ubuntu.com/ubuntu/pool/main/s/ssh-import-id/ssh-import-id_5.5-0ubuntu1_all.deb" "d4f2886e698cccdf5013a5d52ee457f3469f8ffba8b15412de6fca17aea05674" "$sshimportid_fn")
+files=(ncurses opensshclient opensshserver opensshsftpserver sshimportid)
+wget_and_checksum "${files[@]}"
+openssh_dir="openssh_debs"
+mkdir "$openssh_dir"
+for f in "$ncurses_fn" "$opensshclient_fn" "$opensshserver_fn" "$opensshsftpserver_fn" "$sshimportid_fn";
+do
+    mv "$f" "$openssh_dir"
+done
+openssh_tar="openSSH_7.2_debs.tgz"
+tar -czf "$openssh_tar" "$openssh_dir"
+mv "$openssh_tar" vm_resources/debs/
+rm -rf "$openssh_dir"
+
+# pssh
+pssh_fn="pssh_2.3.1-1_all.deb"
+pssh=("http://archive.ubuntu.com/ubuntu/pool/universe/p/pssh/pssh_2.3.1-1_all.deb" "eaad9c666e4ec709fcecde65a92db08fb8d8a1413c7aba06e10d6f4a44b78a38" "$pssh_fn")
+files=(pssh)
+wget_and_checksum "${files[@]}"
+pssh_dir="pssh_debs"
+pssh_tar="pssh_2.3.1-1_all_debs.tgz"
+mkdir "$pssh_dir"
+mv "$pssh_fn" "$pssh_dir"
+tar -czf "$pssh_tar" "$pssh_dir"
+mv "$pssh_tar" vm_resources/debs/
+rm -rf "$pssh_dir"
+
+# tmux
+tmux_fn="tmux_2.1-3build1_amd64.deb"
+tmux=("http://archive.ubuntu.com/ubuntu/pool/main/t/tmux/tmux_2.1-3build1_amd64.deb" "c018c7238ee14e9f3f42dcf374e563f58055b998c5ae5e89b1c99fafee1df022" "$tmux_fn")
+files=(tmux)
+wget_and_checksum "${files[@]}"
+tmux_dir="tmux_debs"
+tmux_tar="tmux_2.1_debs.tgz"
+mkdir "$tmux_dir"
+mv "$tmux_fn" "$tmux_dir"
+tar -czf "$tmux_tar" "$tmux_dir"
+mv "$tmux_tar" vm_resources/debs/
+rm -rf "$tmux_dir"
+
+# Set the flag to notify of successful completion
+touch $INSTALL_FLAG

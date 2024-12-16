@@ -1,0 +1,15 @@
+name: linux.ubuntu1604
+attributes:
+    depends: []
+    provides: []
+model_components:
+    depends:
+        - linux.ubuntu
+images:
+    - paths:
+        - images/ubuntu-16.04.4-server-amd64.qcow2.xz
+      architecture: x86_64
+    - paths:
+        - images/ubuntu-16.04.4-desktop-amd64.qcow2.xz
+      architecture: x86_64
+model_component_objects: model_component_objects.py

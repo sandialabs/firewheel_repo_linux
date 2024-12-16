@@ -1,0 +1,16 @@
+name: linux.ubuntu1404
+attributes:
+    depends: []
+    provides: []
+model_components:
+    depends:
+        - linux.ubuntu
+images:
+    - paths:
+        - images/ubuntu-14.04.5-server-amd64.qc2.xz
+        - images/ubuntu-14.04.5-desktop-amd64.qcow2.xz
+      architecture: x86_64
+vm_resources:
+    - vm_resources/*.py
+    - vm_resources/debs/*.tgz
+model_component_objects: model_component_objects.py

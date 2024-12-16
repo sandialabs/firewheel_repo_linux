@@ -1,0 +1,20 @@
+attributes:
+  depends: []
+  precedes: []
+  provides: []
+images:
+- architecture: x86_64
+  paths:
+  - images/ubuntu-22.04-server-amd64.qcow2.tgz
+- architecture: x86_64
+  paths:
+  - images/ubuntu-22.04-desktop-amd64.qcow2.tgz
+model_component_objects: model_component_objects.py
+model_components:
+  depends:
+  - linux.ubuntu
+  - linux.base_objects
+  precedes: []
+name: linux.ubuntu2204
+vm_resources:
+    - vm_resources/debs/*.tgz
