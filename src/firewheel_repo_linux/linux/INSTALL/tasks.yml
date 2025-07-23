@@ -1,0 +1,60 @@
+---
+- name: Check if Linux Base Objects is already installed
+  ansible.builtin.stat:
+    path: "{{ install_flag }}"
+  register: flag_check
+
+- name: Fail if already installed
+  ansible.builtin.fail:
+    msg: "linux.base_objects is already installed!"
+  when: flag_check.stat.exists
+
+- name: Create VM resources directory
+  ansible.builtin.file:
+    path: "{{ vm_resources_dir }}"
+    state: directory
+
+- name: Download and verify files
+  ansible.builtin.get_url:
+    url: "{{ item.url }}"
+    dest: "{{ vm_resources_dir }}/{{ item.parent }}/{{ item.dest }}"
+    checksum: "sha256:{{ item.sha256 }}"
+  loop: "{{ files }}"
+
+- name: Compress profiles into tarball
+  ansible.builtin.archive:
+    path:
+      - "{{ vm_resources_dir }}/.ssh"
+      - "{{ vm_resources_dir }}/.bashrc"
+      - "{{ vm_resources_dir }}/.vimrc"
+    dest: "{{ vm_resources_dir }}/combined_profiles.tgz"
+    format: gz
+
+- name: Move tmux-cssh to vm_resources
+  ansible.builtin.copy:
+    src: "{{ vm_resources_dir }}/tmux-cssh"
+    dest: "{{ vm_resources_dir }}/tmux-cssh"
+
+- name: Clean up temporary files
+  ansible.builtin.file:
+    path:
+      - "{{ vm_resources_dir }}/.ssh"
+      - "{{ vm_resources_dir }}/.bashrc"
+      - "{{ vm_resources_dir }}/.vimrc"
+    state: absent
+
+- name: Verify required files
+  ansible.builtin.stat:
+    path: "{{ item.destination }}"
+  register: required_files_check
+  loop: "{{ required_files }}"
+
+- name: Fail if required files are missing
+  ansible.builtin.fail:
+    msg: "Required file {{ item.destination }} is missing!"
+  when: required_files_check.results | selectattr('stat.exists', 'equalto', False) | list | length > 0
+
+- name: Set installation flag
+  ansible.builtin.file:
+    path: "{{ install_flag }}"
+    state: touch

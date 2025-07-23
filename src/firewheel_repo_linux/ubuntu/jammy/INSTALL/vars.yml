@@ -1,0 +1,13 @@
+---
+install_flag: "{{ mc_dir }}/.linux.ubuntu2204.installed"
+vm_resources_dir: "{{ mc_dir }}/vm_resources/debs"
+parents:
+  - name: "pssh_debs"
+    tarball: "pssh_2.3.4-2_all_debs.tgz"
+
+files:
+  - { parent: "pssh_debs", dest: "pssh_2.3.4-2_all.deb", url: "http://archive.ubuntu.com/ubuntu/pool/universe/p/pssh/pssh_2.3.4-2_all.deb", sha256: "08689810f7f7f87934de47b59c2c9791eeef61059cd45a9388a53035e56d941d" }
+  - { parent: "pssh_debs", dest: "python3-psshlib_2.3.4-2_all.deb", url: "http://archive.ubuntu.com/ubuntu/pool/universe/p/pssh/python3-psshlib_2.3.4-2_all.deb", sha256: "8e794c0ae1fa311f4f461ae42fe6d84b5dc8e0e425ce9fa37b2c1345fbc39e7b" }
+
+required_files:
+  - destination: "{{ vm_resources_dir }}/pssh_2.3.4-2_all_debs.tgz"
