@@ -1,18 +1,14 @@
 ---
-- name: Check if Linux Base Objects is already installed
-  ansible.builtin.stat:
-    path: "{{ install_flag }}"
-  register: flag_check
-
-- name: Fail if already installed
-  ansible.builtin.fail:
-    msg: "linux.base_objects is already installed!"
-  when: flag_check.stat.exists
-
 - name: Create VM resources directory
   ansible.builtin.file:
     path: "{{ vm_resources_dir }}"
     state: directory
+
+- name: Create parent directories
+  ansible.builtin.file:
+    path: "{{ vm_resources_dir }}/{{ item.parent }}"
+    state: directory
+  loop: "{{ files }}"
 
 - name: Download and verify files
   ansible.builtin.get_url:
@@ -21,40 +17,47 @@
     checksum: "sha256:{{ item.sha256 }}"
   loop: "{{ files }}"
 
+- name: Generate SSH key pair (if applicable)
+  ansible.builtin.openssh_keypair:
+    path: "{{ ssh_profile.path }}/id_rsa"
+    type: rsa
+    size: 2048
+  when: ssh_profile.ssh_keypair | default(false)
+
+- name: Add public key to authorized_keys
+  ansible.builtin.copy:
+    content: "{{ lookup('file', ssh_profile.path + '/id_rsa.pub') }}"
+    dest: "{{ ssh_profile.path }}/authorized_keys"
+  when: ssh_profile.ssh_keypair | default(false)
+
+- name: Create SSH config file
+  ansible.builtin.copy:
+    content: |
+      Host *
+        StrictHostKeyChecking no
+        UserKnownHostsFile /dev/null
+        ForwardX11Trusted yes
+    dest: "{{ ssh_profile.path }}/config"
+  when: ssh_profile.ssh_keypair | default(false)
+
+- name: Set permissions for SSH files
+  ansible.builtin.file:
+    path: "{{ ssh_profile.path }}/{{ item.file }}"
+    mode: "{{ item.mode }}"
+  loop: "{{ ssh_profile.permissions }}"
+  when: ssh_profile.ssh_keypair | default(false)
+
 - name: Compress profiles into tarball
   ansible.builtin.archive:
     path:
-      - "{{ vm_resources_dir }}/.ssh"
-      - "{{ vm_resources_dir }}/.bashrc"
-      - "{{ vm_resources_dir }}/.vimrc"
+      - "{{ vm_resources_dir }}/profiles"
+      - "{{ ssh_profile.path }}"
     dest: "{{ vm_resources_dir }}/combined_profiles.tgz"
     format: gz
-
-- name: Move tmux-cssh to vm_resources
-  ansible.builtin.copy:
-    src: "{{ vm_resources_dir }}/tmux-cssh"
-    dest: "{{ vm_resources_dir }}/tmux-cssh"
 
 - name: Clean up temporary files
   ansible.builtin.file:
     path:
-      - "{{ vm_resources_dir }}/.ssh"
-      - "{{ vm_resources_dir }}/.bashrc"
-      - "{{ vm_resources_dir }}/.vimrc"
+      - "{{ vm_resources_dir }}/profiles"
+      - "{{ ssh_profile.path }}"
     state: absent
-
-- name: Verify required files
-  ansible.builtin.stat:
-    path: "{{ item.destination }}"
-  register: required_files_check
-  loop: "{{ required_files }}"
-
-- name: Fail if required files are missing
-  ansible.builtin.fail:
-    msg: "Required file {{ item.destination }} is missing!"
-  when: required_files_check.results | selectattr('stat.exists', 'equalto', False) | list | length > 0
-
-- name: Set installation flag
-  ansible.builtin.file:
-    path: "{{ install_flag }}"
-    state: touch
