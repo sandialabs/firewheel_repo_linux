@@ -1,28 +1,71 @@
 ---
 install_flag: "{{ mc_dir }}/.linux.ubuntu1404.installed"
 vm_resources_dir: "{{ mc_dir }}/vm_resources/debs"
+files:
+  - parent: "php5-fpm"
+    dest: "libxml2_2.9.1+dfsg1-3ubuntu4.7_amd64.deb"
+    url: "https://launchpad.net/~ubuntu-security/+archive/ubuntu/ppa/+build/8849399/+files/libxml2_2.9.1+dfsg1-3ubuntu4.7_amd64.deb"
+    sha256: "7b51243d1f3ff7374c0ac0433b322ab6e3c803db7afc6a2a5bcdc19ce37c7ea6"
+  - parent: "php5-fpm"
+    dest: "php5-common_5.5.9+dfsg-1ubuntu4.29_amd64.deb"
+    url: "http://launchpadlibrarian.net/420574937/php5-common_5.5.9+dfsg-1ubuntu4.29_amd64.deb"
+    sha256: "1f5d38b52e0325e3d2f6cea9f749e9404159c0f14411c6affc66b9c685e98039"
+  - parent: "php5-fpm"
+    dest: "php5-json_1.3.2-2build1_amd64.deb"
+    url: "http://launchpadlibrarian.net/166644209/php5-json_1.3.2-2build1_amd64.deb"
+    sha256: "3e6543d597f85e12d7620997c4ca053ab4dcbfd570ba40a80dbb14f097fdcd2d"
+  - parent: "php5-fpm"
+    dest: "php5-fpm_5.5.9+dfsg-1ubuntu4.29_amd64.deb"
+    url: "http://launchpadlibrarian.net/420574942/php5-fpm_5.5.9+dfsg-1ubuntu4.29_amd64.deb"
+    sha256: "27b856825a0a02dcbcf12972db8d213a55036b6b155c856131011815bd67a94e"
+  - parent: "php5-fpm"
+    dest: "libgnutls-openssl27_2.12.23-12ubuntu2.8_amd64.deb"
+    url: "http://launchpadlibrarian.net/323668248/libgnutls-openssl27_2.12.23-12ubuntu2.8_amd64.deb"
+    sha256: "db5593d5ed61219ebf9f6a0959962496fbcfe50fe4ba53bbabc0b55a62cf79bd"
+  - parent: "php5-fpm"
+    dest: "libgnutls26_2.12.23-12ubuntu2.8_amd64.deb"
+    url: "http://launchpadlibrarian.net/323668244/libgnutls26_2.12.23-12ubuntu2.8_amd64.deb"
+    sha256: "75417c39414ab8919ee02eb4f1761c412d92c10a9ac1839fcd1e04bcfc85f607"
+  - parent: "php5-fpm"
+    dest: "libgcrypt11_1.5.3-2ubuntu4.6_amd64.deb"
+    url: "http://launchpadlibrarian.net/375021363/libgcrypt11_1.5.3-2ubuntu4.6_amd64.deb"
+    sha256: "39ab5032aa4597366d2c33f31e06ba91ba2ad79c8f68aff8ffcfab704b256a2c"
+  - parent: "nginx"
+    dest: "nginx-full_1.4.6-1ubuntu3.9_amd64.deb"
+    url: "http://launchpadlibrarian.net/396275967/nginx-full_1.4.6-1ubuntu3.9_amd64.deb"
+    sha256: "096388ee57570971697259973e3f6c4845f4716b86de4dce2b56108af95ecb55"
+  - parent: "nginx"
+    dest: "nginx-common_1.4.6-1ubuntu3.9_all.deb"
+    url: "http://launchpadlibrarian.net/396275654/nginx-common_1.4.6-1ubuntu3.9_all.deb"
+    sha256: "5b0876c6daaaf4b38b79ac868da4da5292ae1cacb31f240e21576e4daaa4c2ea"
+  - parent: "nginx"
+    dest: "nginx_1.4.6-1ubuntu3.9_all.deb"
+    url: "http://launchpadlibrarian.net/396275652/nginx_1.4.6-1ubuntu3.9_all.deb"
+    sha256: "f378c38389dc640d44f3b2845fd7a5aaef57493fac1ee15bff734f82a172a308"
+  - parent: "nginx"
+    dest: "libxslt1.1_1.1.28-2ubuntu0.2_amd64.deb"
+    url: "http://launchpadlibrarian.net/419388713/libxslt1.1_1.1.28-2ubuntu0.2_amd64.deb"
+    sha256: "cf8f88e9618fba98eef83e6f88a7e2c2480e2bbaa302f99858c970570de7fe94"
+  - parent: "nginx"
+    dest: "libxpm4_3.5.10-1ubuntu0.1_amd64.deb"
+    url: "http://launchpadlibrarian.net/303890383/libxpm4_3.5.10-1ubuntu0.1_amd64.deb"
+    sha256: "800582e71ad963032c1aa27df85f05a50e3ecbb4d2be7a545888d9a2f80ba249"
+  - parent: "nginx"
+    dest: "libvpx1_1.3.0-2_amd64.deb"
+    url: "http://launchpadlibrarian.net/161837330/libvpx1_1.3.0-2_amd64.deb"
+    sha256: "cf537cdbb2fef2d2bf25664651030c8de2083916f4b4a8bd59c4350e5f21e190"
+  - parent: "nginx"
+    dest: "libtiff5_4.0.3-7ubuntu0.11_amd64.deb"
+    url: "http://launchpadlibrarian.net/414706924/libtiff5_4.0.3-7ubuntu0.11_amd64.deb"
+    sha256: "2219cdb57de2893a02b6c5cef554e97fce61018ad6d1277203f8bc29a8ce1dc4"
+
 parents:
   - name: "php5-fpm"
     tarball: "php5-fpm.tgz"
   - name: "nginx"
     tarball: "nginx_trusty_debs.tgz"
 
-files:
-  - { parent: "php5-fpm", dest: "libxml2_2.9.1+dfsg1-3ubuntu4.7_amd64.deb", url: "https://launchpad.net/~ubuntu-security/+archive/ubuntu/ppa/+build/8849399/+files/libxml2_2.9.1+dfsg1-3ubuntu4.7_amd64.deb", sha256: "7b51243d1f3ff7374c0ac0433b322ab6e3c803db7afc6a2a5bcdc19ce37c7ea6" }
-  - { parent: "php5-fpm", dest: "php5-common_5.5.9+dfsg-1ubuntu4.29_amd64.deb", url: "http://launchpadlibrarian.net/420574937/php5-common_5.5.9+dfsg-1ubuntu4.29_amd64.deb", sha256: "1f5d38b52e0325e3d2f6cea9f749e9404159c0f14411c6affc66b9c685e98039" }
-  - { parent: "php5-fpm", dest: "php5-json_1.3.2-2build1_amd64.deb", url: "http://launchpadlibrarian.net/166644209/php5-json_1.3.2-2build1_amd64.deb", sha256: "3e6543d597f85e12d7620997c4ca053ab4dcbfd570ba40a80dbb14f097fdcd2d" }
-  - { parent: "php5-fpm", dest: "php5-fpm_5.5.9+dfsg-1ubuntu4.29_amd64.deb", url: "http://launchpadlibrarian.net/420574942/php5-fpm_5.5.9+dfsg-1ubuntu4.29_amd64.deb", sha256: "27b856825a0a02dcbcf12972db8d213a55036b6b155c856131011815bd67a94e" }
-  - { parent: "php5-fpm", dest: "libgnutls-openssl27_2.12.23-12ubuntu2.8_amd64.deb", url: "http://launchpadlibrarian.net/323668248/libgnutls-openssl27_2.12.23-12ubuntu2.8_amd64.deb", sha256: "db5593d5ed61219ebf9f6a0959962496fbcfe50fe4ba53bbabc0b55a62cf79bd" }
-  - { parent: "php5-fpm", dest: "libgnutls26_2.12.23-12ubuntu2.8_amd64.deb", url: "http://launchpadlibrarian.net/323668244/libgnutls26_2.12.23-12ubuntu2.8_amd64.deb", sha256: "75417c39414ab8919ee02eb4f1761c412d92c10a9ac1839fcd1e04bcfc85f607" }
-  - { parent: "php5-fpm", dest: "libgcrypt11_1.5.3-2ubuntu4.6_amd64.deb", url: "http://launchpadlibrarian.net/375021363/libgcrypt11_1.5.3-2ubuntu4.6_amd64.deb", sha256: "39ab5032aa4597366d2c33f31e06ba91ba2ad79c8f68aff8ffcfab704b256a2c" }
-  - { parent: "nginx", dest: "nginx-full_1.4.6-1ubuntu3.9_amd64.deb", url: "http://launchpadlibrarian.net/396275967/nginx-full_1.4.6-1ubuntu3.9_amd64.deb", sha256: "096388ee57570971697259973e3f6c4845f4716b86de4dce2b56108af95ecb55" }
-  - { parent: "nginx", dest: "nginx-common_1.4.6-1ubuntu3.9_all.deb", url: "http://launchpadlibrarian.net/396275654/nginx-common_1.4.6-1ubuntu3.9_all.deb", sha256: "5b0876c6daaaf4b38b79ac868da4da5292ae1cacb31f240e21576e4daaa4c2ea" }
-  - { parent: "nginx", dest: "nginx_1.4.6-1ubuntu3.9_all.deb", url: "http://launchpadlibrarian.net/396275652/nginx_1.4.6-1ubuntu3.9_all.deb", sha256: "f378c38389dc640d44f3b2845fd7a5aaef57493fac1ee15bff734f82a172a308" }
-  - { parent: "nginx", dest: "libxslt1.1_1.1.28-2ubuntu0.2_amd64.deb", url: "http://launchpadlibrarian.net/419388713/libxslt1.1_1.1.28-2ubuntu0.2_amd64.deb", sha256: "cf8f88e9618fba98eef83e6f88a7e2c2480e2bbaa302f99858c970570de7fe94" }
-  - { parent: "nginx", dest: "libxpm4_3.5.10-1ubuntu0.1_amd64.deb", url: "http://launchpadlibrarian.net/303890383/libxpm4_3.5.10-1ubuntu0.1_amd64.deb", sha256: "800582e71ad963032c1aa27df85f05a50e3ecbb4d2be7a545888d9a2f80ba249" }
-  - { parent: "nginx", dest: "libvpx1_1.3.0-2_amd64.deb", url: "http://launchpadlibrarian.net/161837330/libvpx1_1.3.0-2_amd64.deb", sha256: "cf537cdbb2fef2d2bf25664651030c8de2083916f4b4a8bd59c4350e5f21e190" }
-  - { parent: "nginx", dest: "libtiff5_4.0.3-7ubuntu0.11_amd64.deb", url: "http://launchpadlibrarian.net/414706924/libtiff5_4.0.3-7ubuntu0.11_amd64.deb", sha256: "2219cdb57de2893a02b6c5cef554e97fce61018ad6d1277203f8bc29a8ce1dc4" }
-
 required_files:
   - destination: "{{ vm_resources_dir }}/php5-fpm.tgz"
   - destination: "{{ vm_resources_dir }}/nginx_trusty_debs.tgz"
+  - destination: "{{ mc_dir }}/vm_resources/configure_nginx_trusty.py"

@@ -1,6 +1,52 @@
 ---
 install_flag: "{{ mc_dir }}/.linux.ubuntu.installed"
 vm_resources_dir: "{{ mc_dir }}/vm_resources/debs"
+files:
+  - parent: "htop"
+    dest: "htop_1.0.2-3_amd64.deb"
+    url: "http://archive.ubuntu.com/ubuntu/pool/universe/h/htop/htop_1.0.2-3_amd64.deb"
+    sha256: "0311d8a26689935ca53e8e9252cb2d95a1fdc2f8278f4edb5733f555dad984a9"
+  - parent: "expect"
+    dest: "expect_5.45-7_amd64.deb"
+    url: "http://archive.ubuntu.com/ubuntu/pool/universe/e/expect/expect_5.45-7_amd64.deb"
+    sha256: "abad38a5b63d9f2e77da359d27a514e552cae280a90df21332d91ee6cf8dfe9c"
+  - parent: "expect"
+    dest: "libtcl8.6_8.6.5+dfsg-2_amd64.deb"
+    url: "http://archive.ubuntu.com/ubuntu/pool/main/t/tcl8.6/libtcl8.6_8.6.5+dfsg-2_amd64.deb"
+    sha256: "a061cf3a366b9d49b71a83441dc737cc2d0f2d8019543944f20a4d1d2622cdc7"
+  - parent: "expect"
+    dest: "tcl-expect_5.45-7_amd64.deb"
+    url: "http://archive.ubuntu.com/ubuntu/pool/universe/e/expect/tcl-expect_5.45-7_amd64.deb"
+    sha256: "31076fdac0515f4b9c719af712a452e4797a232eb0d9970221ed0b0149fed43f"
+  - parent: "openssh"
+    dest: "ncurses-term_6.0+20160213-1ubuntu1_all.deb"
+    url: "http://archive.ubuntu.com/ubuntu/pool/main/n/ncurses/ncurses-term_6.0+20160213-1ubuntu1_all.deb"
+    sha256: "2efb680d98af002b11948a4215c50259a799260c7fbb8b9f06e2d2f3736ab717"
+  - parent: "openssh"
+    dest: "openssh-client_7.2p2-4ubuntu2.10_amd64.deb"
+    url: "http://archive.ubuntu.com/ubuntu/pool/main/o/openssh/openssh-client_7.2p2-4ubuntu2.10_amd64.deb"
+    sha256: "2e9a24614869da9ab5bffead28507c0781f748c818e048d2315eea172af36877"
+  - parent: "openssh"
+    dest: "openssh-server_7.2p2-4ubuntu2.10_amd64.deb"
+    url: "http://archive.ubuntu.com/ubuntu/pool/main/o/openssh/openssh-server_7.2p2-4ubuntu2.10_amd64.deb"
+    sha256: "9dd06c7275ca1d047a450b53a0d03c0f7c3d8df5d35988ee146280a900fefca4"
+  - parent: "openssh"
+    dest: "openssh-sftp-server_7.2p2-4ubuntu2.10_amd64.deb"
+    url: "http://archive.ubuntu.com/ubuntu/pool/main/o/openssh/openssh-sftp-server_7.2p2-4ubuntu2.10_amd64.deb"
+    sha256: "fe0622c278799e4e6304d83bcb0f832888fb2082dbe4652c603a18e007c37a4b"
+  - parent: "openssh"
+    dest: "ssh-import-id_5.5-0ubuntu1_all.deb"
+    url: "http://archive.ubuntu.com/ubuntu/pool/main/s/ssh-import-id/ssh-import-id_5.5-0ubuntu1_all.deb"
+    sha256: "d4f2886e698cccdf5013a5d52ee457f3469f8ffba8b15412de6fca17aea05674"
+  - parent: "pssh"
+    dest: "pssh_2.3.1-1_all.deb"
+    url: "http://archive.ubuntu.com/ubuntu/pool/universe/p/pssh/pssh_2.3.1-1_all.deb"
+    sha256: "eaad9c666e4ec709fcecde65a92db08fb8d8a1413c7aba06e10d6f4a44b78a38"
+  - parent: "tmux"
+    dest: "tmux_2.1-3build1_amd64.deb"
+    url: "http://archive.ubuntu.com/ubuntu/pool/main/t/tmux/tmux_2.1-3build1_amd64.deb"
+    sha256: "c018c7238ee14e9f3f42dcf374e563f58055b998c5ae5e89b1c99fafee1df022"
+
 parents:
   - name: "htop"
     tarball: "htop-1_0_2_debs.tgz"
@@ -13,22 +59,14 @@ parents:
   - name: "tmux"
     tarball: "tmux_2.1_debs.tgz"
 
-files:
-  - { parent: "htop", dest: "htop_1.0.2-3_amd64.deb", url: "http://archive.ubuntu.com/ubuntu/pool/universe/h/htop/htop_1.0.2-3_amd64.deb", sha256: "0311d8a26689935ca53e8e9252cb2d95a1fdc2f8278f4edb5733f555dad984a9" }
-  - { parent: "expect", dest: "expect_5.45-7_amd64.deb", url: "http://archive.ubuntu.com/ubuntu/pool/universe/e/expect/expect_5.45-7_amd64.deb", sha256: "abad38a5b63d9f2e77da359d27a514e552cae280a90df21332d91ee6cf8dfe9c" }
-  - { parent: "expect", dest: "libtcl8.6_8.6.5+dfsg-2_amd64.deb", url: "http://archive.ubuntu.com/ubuntu/pool/main/t/tcl8.6/libtcl8.6_8.6.5+dfsg-2_amd64.deb", sha256: "a061cf3a366b9d49b71a83441dc737cc2d0f2d8019543944f20a4d1d2622cdc7" }
-  - { parent: "expect", dest: "tcl-expect_5.45-7_amd64.deb", url: "http://archive.ubuntu.com/ubuntu/pool/universe/e/expect/tcl-expect_5.45-7_amd64.deb", sha256: "31076fdac0515f4b9c719af712a452e4797a232eb0d9970221ed0b0149fed43f" }
-  - { parent: "openssh", dest: "ncurses-term_6.0+20160213-1ubuntu1_all.deb", url: "http://archive.ubuntu.com/ubuntu/pool/main/n/ncurses/ncurses-term_6.0+20160213-1ubuntu1_all.deb", sha256: "2efb680d98af002b11948a4215c50259a799260c7fbb8b9f06e2d2f3736ab717" }
-  - { parent: "openssh", dest: "openssh-client_7.2p2-4ubuntu2.10_amd64.deb", url: "http://archive.ubuntu.com/ubuntu/pool/main/o/openssh/openssh-client_7.2p2-4ubuntu2.10_amd64.deb", sha256: "2e9a24614869da9ab5bffead28507c0781f748c818e048d2315eea172af36877" }
-  - { parent: "openssh", dest: "openssh-server_7.2p2-4ubuntu2.10_amd64.deb", url: "http://archive.ubuntu.com/ubuntu/pool/main/o/openssh/openssh-server_7.2p2-4ubuntu2.10_amd64.deb", sha256: "9dd06c7275ca1d047a450b53a0d03c0f7c3d8df5d35988ee146280a900fefca4" }
-  - { parent: "openssh", dest: "openssh-sftp-server_7.2p2-4ubuntu2.10_amd64.deb", url: "http://archive.ubuntu.com/ubuntu/pool/main/o/openssh/openssh-sftp-server_7.2p2-4ubuntu2.10_amd64.deb", sha256: "fe0622c278799e4e6304d83bcb0f832888fb2082dbe4652c603a18e007c37a4b" }
-  - { parent: "openssh", dest: "ssh-import-id_5.5-0ubuntu1_all.deb", url: "http://archive.ubuntu.com/ubuntu/pool/main/s/ssh-import-id/ssh-import-id_5.5-0ubuntu1_all.deb", sha256: "d4f2886e698cccdf5013a5d52ee457f3469f8ffba8b15412de6fca17aea05674" }
-  - { parent: "pssh", dest: "pssh_2.3.1-1_all.deb", url: "http://archive.ubuntu.com/ubuntu/pool/universe/p/pssh/pssh_2.3.1-1_all.deb", sha256: "eaad9c666e4ec709fcecde65a92db08fb8d8a1413c7aba06e10d6f4a44b78a38" }
-  - { parent: "tmux", dest: "tmux_2.1-3build1_amd64.deb", url: "http://archive.ubuntu.com/ubuntu/pool/main/t/tmux/tmux_2.1-3build1_amd64.deb", sha256: "c018c7238ee14e9f3f42dcf374e563f58055b998c5ae5e89b1c99fafee1df022" }
-
 required_files:
   - destination: "{{ vm_resources_dir }}/htop-1_0_2_debs.tgz"
   - destination: "{{ vm_resources_dir }}/expect_5.45-7_amd64_debs.tgz"
   - destination: "{{ vm_resources_dir }}/openSSH_7.2_debs.tgz"
   - destination: "{{ vm_resources_dir }}/pssh_2.3.1-1_all_debs.tgz"
   - destination: "{{ vm_resources_dir }}/tmux_2.1_debs.tgz"
+  - destination: "{{ mc_dir }}/vm_resources/debconf.sh"
+  - destination: "{{ mc_dir }}/vm_resources/install_debs.py"
+  - destination: "{{ mc_dir }}/vm_resources/install_debs.sh"
+  - destination: "{{ mc_dir }}/vm_resources/install_linux_service.py"
+  - destination: "{{ mc_dir }}/vm_resources/stop_apt_daily.sh"
