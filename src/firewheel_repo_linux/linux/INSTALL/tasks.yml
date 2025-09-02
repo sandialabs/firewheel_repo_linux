@@ -1,19 +1,19 @@
 ---
 - name: Create VM resources directory
   ansible.builtin.file:
-    path: "{{ vm_resources_dir }}"
+    path: "{{ download_dir }}"
     state: directory
 
 - name: Create parent directories
   ansible.builtin.file:
-    path: "{{ vm_resources_dir }}/{{ item.parent }}"
+    path: "{{ download_dir }}/{{ item.parent }}"
     state: directory
   loop: "{{ files }}"
 
 - name: Download and verify files
   ansible.builtin.get_url:
     url: "{{ item.url }}"
-    dest: "{{ vm_resources_dir }}/{{ item.parent }}/{{ item.dest }}"
+    dest: "{{ download_dir }}/{{ item.parent }}/{{ item.dest }}"
     checksum: "sha256:{{ item.sha256 }}"
   loop: "{{ files }}"
 
@@ -50,14 +50,14 @@
 - name: Compress profiles into tarball
   ansible.builtin.archive:
     path:
-      - "{{ vm_resources_dir }}/profiles"
+      - "{{ download_dir }}/profiles"
       - "{{ ssh_profile.path }}"
-    dest: "{{ vm_resources_dir }}/combined_profiles.tgz"
+    dest: "{{ download_dir }}/combined_profiles.tgz"
     format: gz
 
 - name: Clean up temporary files
   ansible.builtin.file:
     path:
-      - "{{ vm_resources_dir }}/profiles"
+      - "{{ download_dir }}/profiles"
       - "{{ ssh_profile.path }}"
     state: absent

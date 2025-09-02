@@ -1,6 +1,6 @@
 ---
 install_flag: "{{ mc_dir }}/.linux.base_objects.installed"
-vm_resources_dir: "{{ mc_dir }}/vm_resources"
+download_dir: "{{ mc_dir }}/vm_resources"
 files:
   - parent: "profiles"
     dest: ".vimrc"
@@ -16,7 +16,7 @@ files:
     sha256: "cd44ed3321abc190a0a128b944b004857770e8ea18c03952e63a234cb3056098"
 
 ssh_profile:
-  path: "{{ vm_resources_dir }}/.ssh"
+  path: "{{ download_dir }}/.ssh"
   ssh_keypair: true
   permissions:
     - file: "authorized_keys"
@@ -25,4 +25,9 @@ ssh_profile:
       mode: "0600"
 
 required_files:
-  - destination: "{{ vm_resources_dir }}/combined_profiles.tgz"
+  - destination: "{{ download_dir }}/combined_profiles.tgz"
+  - destination: "{{ mc_dir }}/vm_resources/chpasswd.sh"
+  - destination: "{{ mc_dir }}/vm_resources/configure_ips.sh"
+  - destination: "{{ mc_dir }}/vm_resources/set_hostname.sh"
+  - destination: "{{ mc_dir }}/vm_resources/set_netplan_interfaces.sh"
+  - destination: "{{ mc_dir }}/vm_resources/set_ulimit.sh"

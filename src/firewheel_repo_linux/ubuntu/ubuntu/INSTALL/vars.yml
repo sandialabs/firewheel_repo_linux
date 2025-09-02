@@ -1,6 +1,6 @@
 ---
 install_flag: "{{ mc_dir }}/.linux.ubuntu.installed"
-vm_resources_dir: "{{ mc_dir }}/vm_resources/debs"
+download_dir: "{{ mc_dir }}/vm_resources/debs"
 files:
   - parent: "htop"
     dest: "htop_1.0.2-3_amd64.deb"
@@ -60,13 +60,8 @@ parents:
     tarball: "tmux_2.1_debs.tgz"
 
 required_files:
-  - destination: "{{ vm_resources_dir }}/htop-1_0_2_debs.tgz"
-  - destination: "{{ vm_resources_dir }}/expect_5.45-7_amd64_debs.tgz"
-  - destination: "{{ vm_resources_dir }}/openSSH_7.2_debs.tgz"
-  - destination: "{{ vm_resources_dir }}/pssh_2.3.1-1_all_debs.tgz"
-  - destination: "{{ vm_resources_dir }}/tmux_2.1_debs.tgz"
-  - destination: "{{ mc_dir }}/vm_resources/debconf.sh"
-  - destination: "{{ mc_dir }}/vm_resources/install_debs.py"
-  - destination: "{{ mc_dir }}/vm_resources/install_debs.sh"
-  - destination: "{{ mc_dir }}/vm_resources/install_linux_service.py"
-  - destination: "{{ mc_dir }}/vm_resources/stop_apt_daily.sh"
+  - destination: "{{ download_dir }}/htop-1_0_2_debs.tgz"
+  - destination: "{{ download_dir }}/expect_5.45-7_amd64_debs.tgz"
+  - destination: "{{ download_dir }}/openSSH_7.2_debs.tgz"
+  - destination: "{{ download_dir }}/pssh_2.3.1-1_all_debs.tgz"
+  - destination: "{{ download_dir }}/tmux_2.1_debs.tgz"

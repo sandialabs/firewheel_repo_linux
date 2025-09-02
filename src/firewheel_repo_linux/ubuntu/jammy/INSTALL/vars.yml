@@ -1,6 +1,6 @@
 ---
 install_flag: "{{ mc_dir }}/.linux.ubuntu2204.installed"
-vm_resources_dir: "{{ mc_dir }}/vm_resources/debs"
+download_dir: "{{ mc_dir }}/vm_resources/debs"
 files:
   - parent: "pssh_debs"
     dest: "pssh_2.3.4-2_all.deb"
@@ -16,4 +16,4 @@ parents:
     tarball: "pssh_2.3.4-2_all_debs.tgz"
 
 required_files:
-  - destination: "{{ vm_resources_dir }}/pssh_2.3.4-2_all_debs.tgz"
+  - destination: "{{ download_dir }}/pssh_2.3.4-2_all_debs.tgz"
