@@ -25,6 +25,7 @@ ssh_profile:
 
 required_files:
   - destination: "{{ download_dir }}/combined_profiles.tgz"
+  - destination: "{{ download_dir }}/tmux-cssh"
   - destination: "{{ mc_dir }}/vm_resources/chpasswd.sh"
   - destination: "{{ mc_dir }}/vm_resources/configure_ips.sh"
   - destination: "{{ mc_dir }}/vm_resources/set_hostname.sh"
