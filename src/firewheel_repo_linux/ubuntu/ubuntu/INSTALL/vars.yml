@@ -1,5 +1,4 @@
 ---
-install_flag: "{{ mc_dir }}/.linux.ubuntu.installed"
 download_dir: "{{ mc_dir }}/vm_resources/debs"
 files:
   - parent: "htop"

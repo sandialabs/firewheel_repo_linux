@@ -1,5 +1,4 @@
 ---
-install_flag: "{{ mc_dir }}/.linux.base_objects.installed"
 download_dir: "{{ mc_dir }}/vm_resources"
 files:
   - parent: "profiles"

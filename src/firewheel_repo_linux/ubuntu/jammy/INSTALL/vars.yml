@@ -1,5 +1,4 @@
 ---
-install_flag: "{{ mc_dir }}/.linux.ubuntu2204.installed"
 download_dir: "{{ mc_dir }}/vm_resources/debs"
 files:
   - parent: "pssh_debs"
@@ -17,3 +16,5 @@ parents:
 
 required_files:
   - destination: "{{ download_dir }}/pssh_2.3.4-2_all_debs.tgz"
+  - destination: "{{ mc_dir }}/images/ubuntu-22.04-server-amd64.qcow2.tgz"
+  - destination: "{{ mc_dir }}/images/ubuntu-22.04-desktop-amd64.qcow2.tgz"
