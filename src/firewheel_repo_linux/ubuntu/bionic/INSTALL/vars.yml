@@ -1,0 +1,4 @@
+---
+required_files:
+  - destination: "{{ mc_dir }}/images/ubuntu-18.04.5-server-amd64.qcow2.xz"
+  - destination: "{{ mc_dir }}/images/ubuntu-18.04.5-desktop-amd64.qcow2.xz"

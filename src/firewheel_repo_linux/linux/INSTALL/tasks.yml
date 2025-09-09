@@ -1,0 +1,63 @@
+---
+- name: Create VM resources directory
+  ansible.builtin.file:
+    path: "{{ download_dir }}"
+    state: directory
+
+- name: Create parent directories
+  ansible.builtin.file:
+    path: "{{ download_dir }}/{{ item.parent }}"
+    state: directory
+  loop: "{{ files }}"
+
+- name: Download and verify files
+  ansible.builtin.get_url:
+    url: "{{ item.url }}"
+    dest: "{{ download_dir }}/{{ item.parent }}/{{ item.dest }}"
+    checksum: "sha256:{{ item.sha256 }}"
+  loop: "{{ files }}"
+
+- name: Generate SSH key pair (if applicable)
+  ansible.builtin.openssh_keypair:
+    path: "{{ ssh_profile.path }}/id_rsa"
+    type: rsa
+    size: 2048
+  when: ssh_profile.ssh_keypair | default(false)
+
+- name: Add public key to authorized_keys
+  ansible.builtin.copy:
+    content: "{{ lookup('file', ssh_profile.path + '/id_rsa.pub') }}"
+    dest: "{{ ssh_profile.path }}/authorized_keys"
+  when: ssh_profile.ssh_keypair | default(false)
+
+- name: Create SSH config file
+  ansible.builtin.copy:
+    content: |
+      Host *
+        StrictHostKeyChecking no
+        UserKnownHostsFile /dev/null
+        ForwardX11Trusted yes
+    dest: "{{ ssh_profile.path }}/config"
+  when: ssh_profile.ssh_keypair | default(false)
+
+- name: Set permissions for SSH files
+  ansible.builtin.file:
+    path: "{{ ssh_profile.path }}/{{ item.file }}"
+    mode: "{{ item.mode }}"
+  loop: "{{ ssh_profile.permissions }}"
+  when: ssh_profile.ssh_keypair | default(false)
+
+- name: Compress profiles into tarball
+  ansible.builtin.archive:
+    path:
+      - "{{ download_dir }}/profiles"
+      - "{{ ssh_profile.path }}"
+    dest: "{{ download_dir }}/combined_profiles.tgz"
+    format: gz
+
+- name: Clean up temporary files
+  ansible.builtin.file:
+    path:
+      - "{{ download_dir }}/profiles"
+      - "{{ ssh_profile.path }}"
+    state: absent
