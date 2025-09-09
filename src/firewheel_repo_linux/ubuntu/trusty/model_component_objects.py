@@ -26,25 +26,25 @@ class Ubuntu1404Server:
         """
         self.vm = getattr(self, "vm", {})
 
-        if "architecture" not in self.vm:
+        if not self.vm.get("architecture"):
             self.vm["architecture"] = "x86_64"
-        if "vcpu" not in self.vm:
+        if not self.vm.get("vcpu"):
             self.vm["vcpu"] = {
                 "model": "qemu64",
                 "sockets": 1,
                 "cores": 1,
                 "threads": 1,
             }
-        if "mem" not in self.vm:
+        if not self.vm.get("mem"):
             self.vm["mem"] = 256
-        if "drives" not in self.vm:
+        if not self.vm.get("drives"):
             self.vm["drives"] = [
                 {
                     "db_path": "ubuntu-14.04.5-server-amd64.qc2.xz",
                     "file": "ubuntu-14.04.5-server-amd64.qc2",
                 }
             ]
-        if "vga" not in self.vm:
+        if not self.vm.get("vga"):
             self.vm["vga"] = "std"
 
         self.set_image("ubuntu1404server")
@@ -63,25 +63,25 @@ class Ubuntu1404Desktop:
         """
         self.vm = getattr(self, "vm", {})
 
-        if "architecture" not in self.vm:
+        if not self.vm.get("architecture"):
             self.vm["architecture"] = "x86_64"
-        if "vcpu" not in self.vm:
+        if not self.vm.get("vcpu"):
             self.vm["vcpu"] = {
                 "model": "qemu64",
                 "sockets": 1,
                 "cores": 1,
                 "threads": 1,
             }
-        if "mem" not in self.vm:
+        if not self.vm.get("mem"):
             self.vm["mem"] = 1024
-        if "drives" not in self.vm:
+        if not self.vm.get("drives"):
             self.vm["drives"] = [
                 {
                     "db_path": "ubuntu-14.04.5-desktop-amd64.qcow2.xz",
                     "file": "ubuntu-14.04.5-desktop-amd64.qcow2",
                 }
             ]
-        if "vga" not in self.vm:
+        if not self.vm.get("vga"):
             self.vm["vga"] = "std"
 
         self.set_image("ubuntu1404desktop")
