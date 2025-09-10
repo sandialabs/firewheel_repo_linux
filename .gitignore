@@ -102,3 +102,6 @@ Session.vim
 
 ## Temporary
 *~
+
+artifacts/
+*.installed
