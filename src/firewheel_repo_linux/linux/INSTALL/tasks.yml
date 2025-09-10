@@ -10,6 +10,17 @@
     state: directory
   loop: "{{ files }}"
 
+- name: Create parent directories for SSH
+  ansible.builtin.file:
+    path: "{{ ssh_profile.path }}"
+    state: directory
+    mode: "0700"
+
+- name: Check if combined_profiles.tgz exists
+  ansible.builtin.stat:
+    path: "{{ download_dir }}/combined_profiles.tgz"
+  register: combined_profiles_stat
+
 - name: Download and verify files
   ansible.builtin.get_url:
     url: "{{ item.url }}"
@@ -17,18 +28,20 @@
     checksum: "sha256:{{ item.sha256 }}"
   loop: "{{ files }}"
 
-- name: Generate SSH key pair (if applicable)
-  ansible.builtin.openssh_keypair:
+- name: Check if SSH private key already exists
+  ansible.builtin.stat:
     path: "{{ ssh_profile.path }}/id_rsa"
-    type: rsa
-    size: 2048
-  when: ssh_profile.ssh_keypair | default(false)
+  register: ssh_key_status
+
+- name: Generate SSH key pair using Bash (if not already present)
+  ansible.builtin.command: >
+    ssh-keygen -t rsa -b 2048 -f "{{ ssh_profile.path }}/id_rsa" -N ""
+  when: not ssh_key_status.stat.exists
 
 - name: Add public key to authorized_keys
   ansible.builtin.copy:
     content: "{{ lookup('file', ssh_profile.path + '/id_rsa.pub') }}"
     dest: "{{ ssh_profile.path }}/authorized_keys"
-  when: ssh_profile.ssh_keypair | default(false)
 
 - name: Create SSH config file
   ansible.builtin.copy:
@@ -38,22 +51,26 @@
         UserKnownHostsFile /dev/null
         ForwardX11Trusted yes
     dest: "{{ ssh_profile.path }}/config"
-  when: ssh_profile.ssh_keypair | default(false)
 
 - name: Set permissions for SSH files
   ansible.builtin.file:
     path: "{{ ssh_profile.path }}/{{ item.file }}"
     mode: "{{ item.mode }}"
   loop: "{{ ssh_profile.permissions }}"
-  when: ssh_profile.ssh_keypair | default(false)
 
 - name: Compress profiles into tarball
   ansible.builtin.archive:
     path:
       - "{{ download_dir }}/profiles"
-      - "{{ ssh_profile.path }}"
     dest: "{{ download_dir }}/combined_profiles.tgz"
     format: gz
+  when: not combined_profiles_stat.stat.exists
+
+- name: Set permissions for combined_profiles.tgz
+  ansible.builtin.file:
+    path: "{{ download_dir }}/combined_profiles.tgz"
+    mode: "0666"
+  when: combined_profiles_stat.stat.exists
 
 - name: Clean up temporary files
   ansible.builtin.file:
