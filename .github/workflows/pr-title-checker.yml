@@ -1,0 +1,15 @@
+# This workflow will enforce FIREWHEEL ecosystem standard PR title checking
+
+name: "Lint Pull Request Title"
+
+on:
+  pull_request:
+    types:
+      - opened
+      - edited
+      - synchronize
+      - reopened
+
+jobs:
+  call-firewheel-pr-title-checker:
+    uses: sandialabs/firewheel/.github/workflows/pr-title-checker.yml@ci-consistent-ecosystem

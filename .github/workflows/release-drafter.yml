@@ -1,0 +1,19 @@
+# This workflow will enforce FIREWHEEL ecosystem standard releases
+
+name: Release Drafter
+
+on:
+  push:
+    branches:
+      - main
+  pull_request_target:
+    types:
+      - opened
+      - reopened
+      - synchronize
+      - labeled
+      - unlabeled
+
+jobs:
+  call-firewheel-linting:
+    uses: sandialabs/firewheel/.github/workflows/release-drafter.yml@ci-consistent-ecosystem
