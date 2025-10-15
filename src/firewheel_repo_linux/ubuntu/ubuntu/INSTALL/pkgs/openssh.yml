@@ -1,0 +1,11 @@
+---
+name: "openssh"
+target_subdir: "vm_resources/debs"
+target: "openSSH_7.2_debs.tgz"
+files:
+  - dest: "openssh-client_7.2p2-4ubuntu2.10_amd64.deb"
+    url: "http://archive.ubuntu.com/ubuntu/pool/main/o/openssh/openssh-client_7.2p2-4ubuntu2.10_amd64.deb"
+    sha256: "2e9a24614869da9ab5bffead28507c0781f748c818e048d2315eea172af36877"
+  - dest: "openssh-server_7.2p2-4ubuntu2.10_amd64.deb"
+    url: "http://archive.ubuntu.com/ubuntu/pool/main/o/openssh/openssh-server_7.2p2-4ubuntu2.10_amd64.deb"
+    sha256: "9dd06c7275ca1d047a450b53a0d03c0f7c3d8df5d35988ee146280a900fefca4"

@@ -1,0 +1,8 @@
+---
+name: "htop"
+target_subdir: "vm_resources/debs"
+target: "htop-1_0_2_debs.tgz"
+files:
+  - dest: "htop_1.0.2-3_amd64.deb"
+    url: "http://archive.ubuntu.com/ubuntu/pool/universe/h/htop/htop_1.0.2-3_amd64.deb"
+    sha256: "0311d8a26689935ca53e8e9252cb2d95a1fdc2f8278f4edb5733f555dad984a9"
