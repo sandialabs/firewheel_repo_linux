@@ -1,0 +1,8 @@
+---
+name: "tmux"
+target_subdir: "vm_resources/debs"
+target: "tmux_2.1_debs.tgz"
+files:
+  - dest: "tmux_2.1-3build1_amd64.deb"
+    url: "http://archive.ubuntu.com/ubuntu/pool/main/t/tmux/tmux_2.1-3build1_amd64.deb"
+    sha256: "c018c7238ee14e9f3f42dcf374e563f58055b998c5ae5e89b1c99fafee1df022"

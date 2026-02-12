@@ -1,0 +1,11 @@
+---
+name: "pssh_debs"
+target_subdir: "vm_resources/debs"
+target: "pssh_2.3.4-2_all_debs.tgz"
+files:
+  - dest: "pssh_2.3.4-2_all.deb"
+    url: "http://archive.ubuntu.com/ubuntu/pool/universe/p/pssh/pssh_2.3.4-2_all.deb"
+    sha256: "08689810f7f7f87934de47b59c2c9791eeef61059cd45a9388a53035e56d941d"
+  - dest: "python3-psshlib_2.3.4-2_all.deb"
+    url: "http://archive.ubuntu.com/ubuntu/pool/universe/p/pssh/python3-psshlib_2.3.4-2_all.deb"
+    sha256: "8e794c0ae1fa311f4f461ae42fe6d84b5dc8e0e425ce9fa37b2c1345fbc39e7b"
