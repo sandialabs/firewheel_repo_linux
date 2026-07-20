@@ -1,5 +1,7 @@
 import json
-import shlex
+from collections.abc import Sequence
+from enum import StrEnum
+from pathlib import Path
 
 from base_objects import VMEndpoint, AbstractUnixEndpoint
 
@@ -7,6 +9,51 @@ from firewheel.control.experiment_graph import (
     IncorrectConflictHandlerError,
     require_class,
 )
+
+
+class TarCompression(StrEnum):
+    """
+    Supported compression formats for tar archive extraction.
+    """
+    AUTO = "auto"
+    NONE = "none"
+    GZIP = "gzip"
+    XZ = "xz"
+    BZIP2 = "bzip2"
+    ZSTD = "zstd"
+
+    @property
+    def cli_options(self) -> tuple[str, ...]:
+        """Return the tar command-line options for this compression format."""
+        match self:
+            case TarCompression.AUTO | TarCompression.NONE:
+                return ()
+            case TarCompression.GZIP:
+                return ("--gzip",)
+            case TarCompression.XZ:
+                return ("--xz",)
+            case TarCompression.BZIP2:
+                return ("--bzip2",)
+            case TarCompression.ZSTD:
+                return ("--zstd",)
+        raise RuntimeError(f"Unhandled tar compression: {self!r}")
+
+    @classmethod
+    def coerce(cls, value) -> "TarCompression":
+        """
+        Convert a string or ``TarCompression`` value into a ``TarCompression``.
+
+        Raises:
+            ValueError: If the value is not a supported compression format.
+        """
+        try:
+            return cls(value)
+        except ValueError:
+            supported_compression_methods = [f"'{method.value}'" for method in cls]
+            raise ValueError(
+                f"Unsupported tar compression '{value}'. "
+                f"Supported values are: {', '.join(supported_compression_methods)}."
+            ) from None
 
 
 @require_class(VMEndpoint)
@@ -171,17 +218,25 @@ class LinuxHost:
         return True
 
     def unpack_tar(
-        self, time, archive, options="-xzf", directory=None, vm_resource=False
+        self,
+        time: int,
+        archive: str | Path,
+        *,
+        compression: TarCompression | str = TarCompression.GZIP,
+        directory: str | Path | None = None,
+        extra_args: Sequence[str] = (),
+        vm_resource: bool = False,
     ):
         """
         Unpack the tar archive.
 
         This unpacks the tar archive, optionally into a specified
-        directory. By default, the archive will be unpacked using the
-        ``'-xzf'`` set of options, reading from the file given as the
-        ``archive`` argument. Other option combinations can be passed
-        directly to the tar executable via the ``options`` parameter,
-        or indirectly via the other method parameters.
+        directory. By default, the archive is treated as gzip-compressed.
+        To unpack an xz-compressed archive, pass ``compression="xz"`` or
+        ``compression=TarCompression.XZ``.
+
+        Less-common tar extraction options can be supplied with
+        ``extra_args``.
 
         Args:
             time (int): The schedule time (positive or negative) at
@@ -191,43 +246,36 @@ class LinuxHost:
                 :py:data:`True`, the name of the VM resource). Unless
                 ``vm_resource`` is :py:data:`True`, it is safest to
                 specify the absolute path of the archive on the VM.
-            options (str): The set of options to be passed to the tar
-                executable. This string must begin with ``'-x'`` and end
-                with ``'f'`` (or ``'-f'``) since this method only
-                performs extractions of named archives.
+            compression (str, TarCompression): The compression format of
+                the tar archive. Supported values are ``"auto"``,
+                ``"none"``, ``"gzip"``, ``"xz"``, ``"bzip2"``, and
+                ``"zstd"``. This may also be provided as a
+                :class:`TarCompression` value.
             directory (str or pathlib.Path, optional): A directory where
                 the archiving utility will move before unpacking the
                 archive. Specifying a directory is recommended when
                 running with ``vm_resource`` set to :py:data:`True`.
+            extra_args (list[str], optional):
+                Additional arguments to pass directly to ``tar``. These
+                should usually not include operation flags such as
+                ``--extract``, archive-file flags such as ``--file``, or
+                compression flags such as ``--gzip``/``--xz``, since this
+                method manages those directly. Defaults to an empty
+                sequence.
             vm_resource (bool, optional): A flag indicating whether the
                 archive is a VM resource and needs to be loaded onto the
                 VM before it is unpacked. Defaults to :py:data:`False`.
-
-        Raises:
-            ValueError: If the provided options are unsupported.
         """
-        if not options.startswith("-x"):
-            raise ValueError(
-                "The `options` parameter must begin with '-x' since this method "
-                "only supports archive extraction."
-            )
-        if not options.endswith("f"):
-            raise ValueError(
-                "The `options` parameter must end with 'f' (or '-f') since this "
-                "method requires that an archive file be specified for extraction."
-            )
-        tar_options = shlex.split(options)
-        if directory:
-            # Prevent duplicate `directory` options lest the kwarg be silently ignored
-            if any(option in options for option in ["-C", "--directory"]):
-                raise ValueError(
-                    "The directory option was provided via both the `options` "
-                    "parameter and the `directory` parameter; use only one."
-                )
-            tar_options = ["-C", str(directory), *tar_options]
-        tar_arguments = [*tar_options, str(archive)]
+        # Parse/identify arguments
+        compression_method = TarCompression.coerce(compression)
+        # Map arguments to the correct CLI invocation
+        tar_arguments = ["--extract", *compression_method.cli_options]
+        if directory is not None:
+            tar_arguments.extend(["--directory", str(directory)])
+        tar_arguments.extend(str(arg) for arg in extra_args)
+        tar_arguments.extend(["--file", str(archive)])
+        # Handle VMR execution (including loading known VMRs onto the VM)
         exec_vm_resource = self.run_executable(time, "tar", arguments=tar_arguments)
-        # If the archive is a known VMR, load it onto the VM
         if vm_resource:
             exec_vm_resource.add_file(archive, archive)
 
