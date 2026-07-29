@@ -117,15 +117,15 @@ class LinuxHost:
         )
         self.run_executable(-246, "rm", "-f /root/combined_profiles.tgz")
 
-    def configure_ips(self, start_time=-200):
+    def _configure_ips(self, start_time=-200):
         """
-        Configure the IP addresses of the VM
+        Create the format for configuring the IP addresses of Linux VMs
 
         Args:
             start_time (int): The start time to configure the VM's hostname (default=-200)
 
         Returns:
-            bool: True if successful, False otherwise.
+            str: The completed configuration
         """
         self.interfaces = getattr(self, "interfaces", None)
         if not self.interfaces:
@@ -162,9 +162,24 @@ class LinuxHost:
                 config += "\n"
 
         if not config:
-            return
+            return ""
 
-        config = f"{nameservers}\n{config}"
+        return f"{nameservers}\n{config}"
+
+    def configure_ips(self, start_time=-200):
+        """
+        Configure the IP addresses of the VM
+
+        Args:
+            start_time (int): The start time to configure the VM's hostname (default=-200)
+
+        Returns:
+            bool: True if successful, False otherwise.
+        """
+        config = self._configure_ips(start_time=start_time)
+
+        if not config:
+            return
 
         self.add_vm_resource(start_time, "configure_ips.sh", config)
 
