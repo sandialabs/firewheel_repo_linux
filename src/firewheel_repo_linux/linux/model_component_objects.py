@@ -117,15 +117,12 @@ class LinuxHost:
         )
         self.run_executable(-246, "rm", "-f /root/combined_profiles.tgz")
 
-    def configure_ips(self, start_time=-200):
+    def _configure_ips(self):
         """
-        Configure the IP addresses of the VM
-
-        Args:
-            start_time (int): The start time to configure the VM's hostname (default=-200)
+        Create the format for configuring the IP addresses of Linux VMs
 
         Returns:
-            bool: True if successful, False otherwise.
+            str: The completed configuration
         """
         self.interfaces = getattr(self, "interfaces", None)
         if not self.interfaces:
@@ -162,9 +159,24 @@ class LinuxHost:
                 config += "\n"
 
         if not config:
-            return
+            return ""
 
-        config = f"{nameservers}\n{config}"
+        return f"{nameservers}\n{config}"
+
+    def configure_ips(self, start_time=-200):
+        """
+        Configure the IP addresses of the VM
+
+        Args:
+            start_time (int): The start time to configure the VM's hostname (default=-200)
+
+        Returns:
+            bool: True if successful, False otherwise.
+        """
+        config = self._configure_ips()
+
+        if not config:
+            return
 
         self.add_vm_resource(start_time, "configure_ips.sh", config)
 
@@ -232,7 +244,9 @@ class LinuxHost:
             exec_vm_resource.add_file(archive, archive)
 
 
-def configure_ip_conflict_handler(entry_name, _decorator_value, _current_instance_value):
+def configure_ip_conflict_handler(
+    entry_name, _decorator_value, _current_instance_value
+):
     """
     The conflict handler for functions overwritten in LinuxNetplanHost that are
     also implemented in LinuxHost, i.e. the ``configure_ips`` function.
