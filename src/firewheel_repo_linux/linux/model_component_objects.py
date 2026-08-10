@@ -232,7 +232,9 @@ class LinuxHost:
             exec_vm_resource.add_file(archive, archive)
 
 
-def configure_ip_conflict_handler(entry_name, _decorator_value, _current_instance_value):
+def configure_ip_conflict_handler(
+    entry_name, _decorator_value, _current_instance_value
+):
     """
     The conflict handler for functions overwritten in LinuxNetplanHost that are
     also implemented in LinuxHost, i.e. the ``configure_ips`` function.
