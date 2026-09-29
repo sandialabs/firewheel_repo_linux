@@ -14,5 +14,7 @@ systemctl status apt-daily.service
 systemctl status apt-daily.timer
 
 echo "Killing running apt processes"
-pkill -f -9 '/apt/apt.systemd' -e
-pkill -f -9 '/usr/bin/unattended-upgrade' -e
+pkill -f -9 '/apt/apt.systemd' -e || true
+pkill -f -9 '/usr/bin/unattended-upgrade' -e || true
+
+exit 0
