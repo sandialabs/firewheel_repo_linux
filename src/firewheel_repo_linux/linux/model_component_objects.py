@@ -126,7 +126,7 @@ class LinuxHost:
         """
         self.interfaces = getattr(self, "interfaces", None)
         if not self.interfaces:
-            return False
+            return ""
 
         try:
             nameservers = self.dns_nameservers
@@ -176,7 +176,7 @@ class LinuxHost:
         config = self._configure_ips()
 
         if not config:
-            return
+            return False
 
         self.add_vm_resource(start_time, "configure_ips.sh", config)
 
