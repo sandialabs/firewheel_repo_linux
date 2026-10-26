@@ -1,0 +1,11 @@
+---
+name: "profiles"
+target_subdir: "vm_resources"
+target: "combined_profiles.tgz"
+files:
+  - dest: ".vimrc"
+    url: "https://github.com/amix/vimrc/raw/3c26776552ecb436bd8090c973435a68dbe8cb62/vimrcs/basic.vim"
+    sha256: "bde3c8e77682d22bde680919d3416524fbc4e13d8aaf2ed25bcd3bdc3b6875b1"
+  - dest: ".bashrc"
+    url: "https://github.com/sudonitesh/beautiful-bash/raw/4ad53ee9d1b0e2104e9dd77ae4f74e71262395d5/.bashrc"
+    sha256: "19fca5072753f1bf8da1d4770d7dfe409c84e29ad21bbe92abbe37b7232df249"

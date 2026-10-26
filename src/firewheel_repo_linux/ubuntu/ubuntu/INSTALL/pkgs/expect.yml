@@ -1,0 +1,14 @@
+---
+name: "expect"
+target_subdir: "vm_resources/debs"
+target: "expect_5.45-7_amd64_debs.tgz"
+files:
+  - dest: "expect_5.45-7_amd64.deb"
+    url: "http://archive.ubuntu.com/ubuntu/pool/universe/e/expect/expect_5.45-7_amd64.deb"
+    sha256: "abad38a5b63d9f2e77da359d27a514e552cae280a90df21332d91ee6cf8dfe9c"
+  - dest: "libtcl8.6_8.6.5+dfsg-2_amd64.deb"
+    url: "http://archive.ubuntu.com/ubuntu/pool/main/t/tcl8.6/libtcl8.6_8.6.5+dfsg-2_amd64.deb"
+    sha256: "a061cf3a366b9d49b71a83441dc737cc2d0f2d8019543944f20a4d1d2622cdc7"
+  - dest: "tcl-expect_5.45-7_amd64.deb"
+    url: "http://archive.ubuntu.com/ubuntu/pool/universe/e/expect/tcl-expect_5.45-7_amd64.deb"
+    sha256: "31076fdac0515f4b9c719af712a452e4797a232eb0d9970221ed0b0149fed43f"

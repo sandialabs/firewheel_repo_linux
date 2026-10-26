@@ -1,0 +1,8 @@
+---
+name: "pssh"
+target_subdir: "vm_resources/debs"
+target: "pssh_2.3.1-1_all_debs.tgz"
+files:
+  - dest: "pssh_2.3.1-1_all.deb"
+    url: "http://archive.ubuntu.com/ubuntu/pool/universe/p/pssh/pssh_2.3.1-1_all.deb"
+    sha256: "eaad9c666e4ec709fcecde65a92db08fb8d8a1413c7aba06e10d6f4a44b78a38"

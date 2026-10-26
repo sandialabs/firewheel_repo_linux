@@ -1,0 +1,8 @@
+---
+name: "tmux-cssh"
+target_subdir: "vm_resources"
+target: "tmux-cssh"
+files:
+  - dest: "tmux-cssh"
+    url: "https://gitlab.com/peikk0/tmux-cssh/-/raw/a35957f7d9a0dbfd296b73dbb6f56ee4c193dc56/tmux-cssh"
+    sha256: "cd44ed3321abc190a0a128b944b004857770e8ea18c03952e63a234cb3056098"
